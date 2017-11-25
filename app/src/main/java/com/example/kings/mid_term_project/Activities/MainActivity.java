@@ -12,7 +12,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -30,6 +29,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView m_RecyclerView;
+    private ImageView m_MenuBtn;
+    private android.support.design.widget.FloatingActionButton m_DeleteButton;
+    private SearchView m_SearchView;
+    private View m_Glass;
+    private FloatingActionMenu m_ActionMenu;
     private MyRecyclerAdapter m_RecyclerAdapter;
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
@@ -59,12 +63,14 @@ public class MainActivity extends AppCompatActivity {
         m_RecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
+                resetStatus();
                 Person temp_data = m_DataStorage.getData().get(position);
                 showDetailActivity(temp_data, "show");
             }
 
             @Override
             public void onLongClick(final int position) {
+                resetStatus();
                 final Person temp_data = m_DataStorage.getData().get(position);
                 AlertDialog.Builder m_alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 m_alertDialogBuilder.setTitle("更多");
@@ -101,10 +107,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initFloatingMenu() {
-        ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
+
+        m_SearchView = findViewById(R.id.search_view);
+        m_Glass = findViewById(R.id.frosted_glass);
+        m_DeleteButton = findViewById(R.id.delete_button);
+
+        m_MenuBtn = new ImageView(this); // Create an icon
+        m_MenuBtn.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
+                .setContentView(m_MenuBtn)
                 .build();
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.red)));
 
@@ -129,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         SubActionButton search = itemBuilder.setContentView(itemIcon).build();
         search.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.yellow)));
 
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+        m_ActionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(addItem)
                 .addSubActionView(multiSelect)
                 .addSubActionView(search)
@@ -140,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                resetStatus();
                 showDetailActivity(null, "add");
             }
         });
@@ -157,6 +169,13 @@ public class MainActivity extends AppCompatActivity {
                 searchFunc();
             }
         });
+        m_MenuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isDelete == false && !m_ActionMenu.isOpen()) m_ActionMenu.open(true);
+                resetStatus();
+            }
+        });
     }
 
     private void showDetailActivity(Person data, String status) {
@@ -170,32 +189,33 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addFunc() {
-
-    }
-
     private void selectFunc() {
         //select button visible
-        isDelete = !isDelete;
+        isDelete = true;
+        updateSelection();
+        m_ActionMenu.close(true);
+        m_MenuBtn.setImageResource(R.mipmap.back);
+
+        deleteFunc();
+    }
+
+    private void updateSelection() {
         m_RecyclerAdapter.set_isDelete(isDelete);
         int size = m_RecyclerAdapter.getItemCount();
         for (int i = 0; i < size; i++) {
             m_RecyclerAdapter.notifyItemChanged(i);
         }
-
-        deleteFunc();
     }
 
     private void deleteFunc() {
         //delete button visible
-        final Button deleteButton = (Button)findViewById(R.id.delete_button);
         if (isDelete)
-            deleteButton.setVisibility(View.VISIBLE);
+            m_DeleteButton.setVisibility(View.VISIBLE);
         else
-            deleteButton.setVisibility(View.INVISIBLE);
+            m_DeleteButton.setVisibility(View.INVISIBLE);
 
         //delete button click function
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        m_DeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
@@ -210,20 +230,35 @@ public class MainActivity extends AppCompatActivity {
                     m_DataStorage.deleteSomePerson(deleteList);
                     m_RecyclerAdapter.notifyDataSetChanged();
                     m_RecyclerAdapter.initDeletePerson();
+                    resetStatus();
                 }
-
             }
         });
     }
 
     private void searchFunc() {
-        final SearchView searchView = (SearchView)findViewById(R.id.search_view);
+        m_ActionMenu.close(true);
         isSearch = !isSearch;
-        if (isSearch)
-            searchView.setVisibility(View.VISIBLE);
-        else
-            searchView.setVisibility(View.INVISIBLE);
+        if (isSearch) {
+            m_SearchView.setVisibility(View.VISIBLE);
+            m_Glass.setVisibility(View.VISIBLE);
+            m_MenuBtn.setImageResource(R.mipmap.back);
+        }
+        else {
+            resetStatus();
+        }
 
 
+    }
+
+    private void resetStatus() {
+        isDelete = false;
+        isSearch = false;
+        m_MenuBtn.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
+        m_DeleteButton.setVisibility(View.INVISIBLE);
+        m_SearchView.setVisibility(View.INVISIBLE);
+        m_Glass.setVisibility(View.INVISIBLE);
+        if (!isDelete) updateSelection();
+        if (m_ActionMenu.isOpen()) m_ActionMenu.close(true);
     }
 }

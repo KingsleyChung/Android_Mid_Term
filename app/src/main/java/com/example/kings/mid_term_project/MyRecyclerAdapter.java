@@ -78,19 +78,21 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         //select button visible
         if (isDelete)
-            holder.m_ImageButton.setVisibility(View.VISIBLE);
+            holder.m_SelectBox.setVisibility(View.VISIBLE);
         else
-            holder.m_ImageButton.setVisibility(View.INVISIBLE);
+            holder.m_SelectBox.setVisibility(View.INVISIBLE);
         //select button click listener
-        holder.m_ImageButton.setOnClickListener(new View.OnClickListener() {
+        holder.m_SelectBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int tag = deletePerson.get(position);
                 if (tag == 1) {
                     deletePerson.set(position, 0);
+                    holder.m_SelectBox.setImageResource(R.mipmap.unchecked);
                 }
                 else {
                     deletePerson.set(position, 1);
+                    holder.m_SelectBox.setImageResource(R.mipmap.checked);
                 }
             }
         });
@@ -104,12 +106,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public CircleImageView m_CircleImageView;
         public TextView m_TextView;
-        public ImageButton m_ImageButton;
+        public ImageButton m_SelectBox;
         public MyViewHolder(View view) {
             super(view);
             m_CircleImageView = view.findViewById(R.id.character_icon);
             m_TextView = view.findViewById(R.id.character_name);
-            m_ImageButton = view.findViewById(R.id.image_button);
+            m_SelectBox = view.findViewById(R.id.select_box);
         }
     }
 

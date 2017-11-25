@@ -2,6 +2,7 @@ package com.example.kings.mid_term_project.Activities;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -55,15 +56,15 @@ public class DetailActivity extends Activity {
                         setEditMode();
                         break;
                     case "edit":
-                        Bitmap temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
+                        Bitmap temp_bitmap = ((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
+                        Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
                         m_DataStorage.updatePerson(m_Data.getName(), temp);
                         m_Data = temp;
                         setShowMode();
                         break;
                     case "add":
-                        temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
+                        temp_bitmap = ((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
+                        temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
                         if (m_DataStorage.addPerson(temp)) {
                             m_Data = temp;
                             setShowMode();
