@@ -43,9 +43,6 @@ public class DataStorage {
         for (int i = 0; i < 5; i++) {
             Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.resourcesInstance, icon[i]);
             Person temp = new Person(name[i], gender[i], type[i], birthday[i], introduction[i], bitmap);
-            //temp.put("hometown", hometown[i]);
-            //temp.put("workfor", workfor[i]);
-            //"index", i);
             data.add(temp);
         }
     }

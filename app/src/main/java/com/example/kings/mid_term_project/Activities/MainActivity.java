@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("Person", data);
+        //bundle.putParcelable("Icon", data.getBitmap());
         intent.putExtras(bundle);
         startActivity(intent);
     }
