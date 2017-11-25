@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     m_DataStorage.deleteSomePerson(deleteList);
                     m_RecyclerAdapter.notifyDataSetChanged();
+                    m_RecyclerAdapter.initDeletePerson();
                 }
 
             }

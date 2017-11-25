@@ -29,7 +29,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     private OnItemClickListener mOnItemClickListener;
     //for delete
     private boolean isDelete;
-    private ArrayList<Integer> deletePerson = new ArrayList<>();
+    private ArrayList<Integer> deletePerson;
 
     public MyRecyclerAdapter(Context context, List<Person> data) {
         m_Data = data;
@@ -38,9 +38,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         initDeletePerson();
     }
 
-    private void initDeletePerson() {
+    public void initDeletePerson() {
+        deletePerson = new ArrayList<>();
         int size = getItemCount();
-        for (int i = 0; i <size; i++) {
+        System.out.println(size);
+        for (int i = 0; i < size; i++) {
             deletePerson.add(0);
         }
     }
@@ -83,13 +85,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.m_ImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Object tag = holder.m_ImageButton.getTag();
-                if (tag.equals("1")) {
-                    holder.m_ImageButton.setTag("0");
+                int tag = deletePerson.get(position);
+                if (tag == 1) {
                     deletePerson.set(position, 0);
                 }
                 else {
-                    holder.m_ImageButton.setTag("1");
                     deletePerson.set(position, 1);
                 }
             }
@@ -128,5 +128,4 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     public ArrayList<Integer> deletePersonList() {
         return deletePerson;
     }
-
 }
