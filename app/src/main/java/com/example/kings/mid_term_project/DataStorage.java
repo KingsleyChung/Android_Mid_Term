@@ -57,7 +57,7 @@ public class DataStorage {
         return dbOperate.insertOne(person);
     }
 
-    public int deletePerson(String name) {
+    public static int deletePerson(String name) {
         for (int i = 0; i < data.size();++i) {
             if (data.get(i).getName().equals(name)) {
                 data.remove(i);

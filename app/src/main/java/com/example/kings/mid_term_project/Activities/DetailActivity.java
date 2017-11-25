@@ -54,20 +54,38 @@ public class DetailActivity extends Activity {
                         break;
                     case "edit":
                         Bitmap temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), m_Category.getText().toString(), m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
+                        Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
                         DataStorage.updatePerson(m_Data.getName(), temp);
                         m_Data = temp;
                         setShowMode();
                         break;
                     case "add":
                         temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), m_Category.getText().toString(), m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
+                        temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
                         if (DataStorage.addPerson(temp)) {
                             m_Data = temp;
                             setShowMode();
                         } else {
                             Toast.makeText(getApplicationContext(),"此人物已存在", Toast.LENGTH_SHORT).show();
                         }
+                        break;
+                }
+            }
+        });
+
+        m_Cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (status) {
+                    case "show":
+                        DataStorage.deletePerson(m_Data.getName());
+                        finish();
+                        break;
+                    case "edit":
+                        setShowMode();
+                        break;
+                    case "add":
+                        finish();
                         break;
                 }
             }
@@ -142,18 +160,8 @@ public class DetailActivity extends Activity {
         m_Description.setEnabled(true);
         m_Category.setEnabled(true);
 
-        m_CategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) category = "史实人物";
-                else category = "虚构人物";
-            }
+        setSpinnerListener();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     private void setAddMode() {
@@ -177,5 +185,24 @@ public class DetailActivity extends Activity {
         m_Time.setEnabled(true);
         m_Description.setEnabled(true);
         m_Category.setEnabled(true);
+
+        category = "史实人物";
+        m_CategorySpinner.setSelection(0);
+        setSpinnerListener();
+    }
+
+    private void setSpinnerListener() {
+        m_CategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) category = "史实人物";
+                else category = "虚构人物";
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }
