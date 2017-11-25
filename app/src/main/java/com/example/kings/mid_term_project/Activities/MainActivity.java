@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         resourcesInstance = this.getResources();
-        m_DataStorage = new DataStorage();
+        m_DataStorage = new DataStorage(getApplicationContext());
 
         initRecyclerView();
         initFloatingMenu();
