@@ -9,6 +9,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.kings.mid_term_project.DataBase.Person;
@@ -19,12 +22,15 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView m_RecyclerView;
     private MyRecyclerAdapter m_RecyclerAdapter;
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
+    private boolean isDelete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +101,14 @@ public class MainActivity extends AppCompatActivity {
                 .addSubActionView(search)
                 .attachTo(actionButton)
                 .build();
+
+        //multiselect button click listener
+        multiSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectFunc();
+            }
+        });
     }
 
     private void showDetailActivity(Person data) {
@@ -104,5 +118,52 @@ public class MainActivity extends AppCompatActivity {
         //bundle.putParcelable("Icon", data.getBitmap());
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void addFunc() {
+
+    }
+
+    private void selectFunc() {
+        //select button visible
+        isDelete = !isDelete;
+        m_RecyclerAdapter.set_isDelete(isDelete);
+        int size = m_RecyclerAdapter.getItemCount();
+        for (int i = 0; i < size; i++) {
+            m_RecyclerAdapter.notifyItemChanged(i);
+        }
+
+        deleteFunc();
+    }
+
+    private void deleteFunc() {
+
+        //delete button visible
+        final Button deleteButton = (Button)findViewById(R.id.delete_button);
+        if (isDelete) {
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            deleteButton.setVisibility(View.INVISIBLE);
+        }
+
+        //delete button click function
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
+                ArrayList<String> deleteList = new ArrayList<>();
+                for (int i = 0; i < deletePerson.size(); i++) {
+                    if (deletePerson.get(i).equals(1)) {
+                        deleteList.add(DataStorage.getData().get(i).getName());
+                        //System.out.println(DataStorage.getData().get(i).getName());
+                    }
+                }
+            }
+        });
+    }
+
+    private void searchFunc() {
+
     }
 }
