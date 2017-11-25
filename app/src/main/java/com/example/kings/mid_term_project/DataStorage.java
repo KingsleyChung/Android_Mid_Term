@@ -76,7 +76,7 @@ public class DataStorage {
 
     public static Bitmap getBitmapFromName(String name) {
         for (int i = 0; i < data.size();++i) {
-            if(data.get(i).getName() == name)
+            if(data.get(i).getName().equals(name))
                 return data.get(i).getBitmap();
         }
         return null;

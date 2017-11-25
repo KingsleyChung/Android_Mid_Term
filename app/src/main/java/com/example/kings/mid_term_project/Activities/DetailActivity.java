@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kings.mid_term_project.DataBase.Person;
+import com.example.kings.mid_term_project.DataStorage;
 import com.example.kings.mid_term_project.R;
 
 /**
@@ -38,6 +39,7 @@ public class DetailActivity extends Activity {
         m_Description = findViewById(R.id.detail_descripion);
 
         //m_Icon.setImageBitmap(m_Data.getBitmap());
+        m_Icon.setImageBitmap(DataStorage.getBitmapFromName(m_Data.getName()));
         m_Name.setText(m_Data.getName());
         m_Gender.setText("性别：" + m_Data.getSex());
         m_Category.setText("人物类别：" + m_Data.getCategory());
