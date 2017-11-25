@@ -1,8 +1,10 @@
 package com.example.kings.mid_term_project.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,7 +12,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.kings.mid_term_project.DataBase.Person;
 import com.example.kings.mid_term_project.DataStorage;
@@ -20,12 +25,16 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView m_RecyclerView;
     private MyRecyclerAdapter m_RecyclerAdapter;
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
+    private boolean isDelete = false;
+    private boolean isSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +60,36 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                 Person temp_data = m_DataStorage.getData().get(position);
-                showDetailActivity(temp_data);
+                showDetailActivity(temp_data, "show");
             }
 
             @Override
-            public void onLongClick(int position) {
+            public void onLongClick(final int position) {
+                final Person temp_data = m_DataStorage.getData().get(position);
+                AlertDialog.Builder m_alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                m_alertDialogBuilder.setTitle("更多");
 
+                final String[] options = {"编辑", "删除"};
+                m_alertDialogBuilder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (i == 0) showDetailActivity(temp_data, "edit");
+                        else {
+                            m_DataStorage.deletePerson(temp_data.getName());
+                            m_RecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+                m_alertDialogBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "您选择了[取消]", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                m_alertDialogBuilder.setCancelable(true);
+                AlertDialog m_alertDialog = m_alertDialogBuilder.create();
+                m_alertDialog.show();
             }
         });
         m_RecyclerView = findViewById(R.id.characterList);
@@ -102,14 +135,94 @@ public class MainActivity extends AppCompatActivity {
                 .addSubActionView(search)
                 .attachTo(actionButton)
                 .build();
+
+        addItem.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                showDetailActivity(null, "add");
+            }
+        });
+        //multiselect button click listener
+        multiSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectFunc();
+            }
+        });
+        //search button click listener
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchFunc();
+            }
+        });
     }
 
-    private void showDetailActivity(Person data) {
+    private void showDetailActivity(Person data, String status) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("Person", data);
-        //bundle.putParcelable("Icon", data.getBitmap());
+        bundle.putString("Status", status);
+        if (status.equals("show") || status.equals("edit")) {
+            bundle.putParcelable("Person", data);
+        }
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void addFunc() {
+
+    }
+
+    private void selectFunc() {
+        //select button visible
+        isDelete = !isDelete;
+        m_RecyclerAdapter.set_isDelete(isDelete);
+        int size = m_RecyclerAdapter.getItemCount();
+        for (int i = 0; i < size; i++) {
+            m_RecyclerAdapter.notifyItemChanged(i);
+        }
+
+        deleteFunc();
+    }
+
+    private void deleteFunc() {
+        //delete button visible
+        final Button deleteButton = (Button)findViewById(R.id.delete_button);
+        if (isDelete)
+            deleteButton.setVisibility(View.VISIBLE);
+        else
+            deleteButton.setVisibility(View.INVISIBLE);
+
+        //delete button click function
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
+                if (deletePerson != null) {
+                    ArrayList<String> deleteList = new ArrayList<>();
+                    for (int i = 0; i < deletePerson.size(); i++) {
+                        if (deletePerson.get(i).equals(1)) {
+                            deleteList.add(DataStorage.getData().get(i).getName());
+
+                        }
+                    }
+                    m_DataStorage.deleteSomePerson(deleteList);
+                    m_RecyclerAdapter.notifyDataSetChanged();
+                }
+
+            }
+        });
+    }
+
+    private void searchFunc() {
+        final SearchView searchView = (SearchView)findViewById(R.id.search_view);
+        isSearch = !isSearch;
+        if (isSearch)
+            searchView.setVisibility(View.VISIBLE);
+        else
+            searchView.setVisibility(View.INVISIBLE);
+
+
     }
 }

@@ -6,6 +6,13 @@
     tools:context="com.example.kings.mid_term_project.Activities.MainActivity"
     android:orientation="vertical" >
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_view"
+        android:visibility="invisible"
+        />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -15,10 +22,19 @@
         android:outlineProvider="bounds"
         android:elevation="10dp"/>
 
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/delete_button"
+        android:visibility="invisible"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
         android:id="@+id/characterList"/>
+
+
 
 </LinearLayout>

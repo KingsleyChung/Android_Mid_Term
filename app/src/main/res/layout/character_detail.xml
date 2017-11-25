@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.kings.mid_term_project.Activities.DetailActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,7 +20,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:id="@+id/detail_icon"
+            android:id="@+id/icon"
             android:src="@mipmap/caocao"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,97 +29,139 @@
             android:outlineProvider="bounds"
             android:elevation="20dp"/>
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_name"
+            android:id="@+id/name"
             android:text="曹操"
+            android:hint="姓名"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="16dp"
-            android:outlineProvider="bounds"
-            android:elevation="20dp" />
+            android:padding="0dp"/>
 
     </android.support.constraint.ConstraintLayout>
 
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
-        android:id="@+id/detail">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_gender"
-            android:text="性别：男"
-            android:textSize="24sp"
-            android:padding="12dp"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:id="@+id/detail_divider1"
-            android:background="#000000"
-            app:layout_constraintLeft_toRightOf="@id/detail_gender"
-            app:layout_constraintTop_toTopOf="@id/detail_gender"
-            app:layout_constraintBottom_toBottomOf="@id/detail_gender"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_category"
-            android:text="人物类别：史实人物"
-            android:textSize="24sp"
-            android:padding="12dp"
-            app:layout_constraintLeft_toRightOf="@id/detail_divider1" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:id="@+id/detail_divider2"
-            android:background="#000000"
-            app:layout_constraintTop_toBottomOf="@id/detail_gender"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_time"
-            android:text="生卒年月：2007-2017"
-            android:textSize="24sp"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/detail_divider2"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:id="@+id/detail_divider3"
-            android:background="#000000"
-            app:layout_constraintTop_toBottomOf="@id/detail_time"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_descripion_title"
-            android:text="简介："
-            android:textSize="24sp"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/detail_divider3" />
-        <TextView
+        android:layout_weight="5">
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_descripion"
-            app:layout_constraintTop_toBottomOf="@id/detail_descripion_title"
-            android:text="人称卧龙先生，曾被三顾茅庐，是个法师，使用技能会有多个魔法球围绕在身边"
-            android:textSize="16sp"
-            android:padding="12dp"/>
+            android:id="@+id/detail">
+            <android.support.constraint.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/center_guideLine"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/gender_title"
+                android:hint="性别"
+                app:hintEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/center_guideLine"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gender"/>
+            </android.support.design.widget.TextInputLayout>
 
-    </android.support.constraint.ConstraintLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/category_title"
+                android:hint="人物类型"
+                app:hintEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintTop_toTopOf="@id/gender_title"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/center_guideLine"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/category"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/category_spinner"
+                app:layout_constraintTop_toTopOf="@id/category_title"
+                app:layout_constraintBottom_toBottomOf="@id/category_title"
+                app:layout_constraintLeft_toLeftOf="@id/category_title"
+                app:layout_constraintRight_toRightOf="@id/category_title"
+                android:entries="@array/category">
+            </Spinner>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/time_title"
+                android:hint="生卒年份"
+                app:hintEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/category_title"
+                app:layout_constraintTop_toBottomOf="@id/gender_title"
+                android:layout_marginLeft="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/time" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_descripion_title"
+                android:hint="简介"
+                app:hintEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/time_title"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/description"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit"
+                android:text="确认"
+                app:layout_constraintTop_toBottomOf="@id/detail_descripion_title"
+                app:layout_constraintRight_toLeftOf="@id/center_guideLine"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancel"
+                android:text="取消"
+                app:layout_constraintTop_toTopOf="@id/submit"
+                app:layout_constraintLeft_toRightOf="@id/center_guideLine"
+                android:layout_marginLeft="20dp"/>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 </LinearLayout>
