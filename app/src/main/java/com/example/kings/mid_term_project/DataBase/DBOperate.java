@@ -45,6 +45,12 @@ public class DBOperate {
         return result;
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        db.execSQL("DELETE FROM Person");
+        db.close();
+    }
+
     //insert one person
     public boolean insertOne(Person person) {
         ArrayList<Person> result = returnAll();
@@ -57,7 +63,7 @@ public class DBOperate {
         ContentValues cValue = new ContentValues();
         cValue.put("name", person.getName());
         cValue.put("sex", person.getSex());
-        cValue.put("category", person.getTime());
+        cValue.put("category", person.getCategory());
         cValue.put("time", person.getTime());
         cValue.put("description", person.getDecription());
         cValue.put("avatar", bitmabToBytes(person.getBitmap()));
@@ -120,22 +126,24 @@ public class DBOperate {
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
         //创建一个字节数组输出流,流的大小为size
         ByteArrayOutputStream baos= new ByteArrayOutputStream(size);
-        try {
+//        try {
             //设置位图的压缩格式，质量为100%，并放入字节数组输出流中
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
             //将字节数组输出流转化为字节数组byte[]
             byte[] imagedata = baos.toByteArray();
             return imagedata;
-        }catch (Exception e){
-        }finally {
-            try {
-                bitmap.recycle();
-                baos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return new byte[0];
+//        }catch (Exception e){
+//        }finally {
+//            try {
+//                if(!bitmap.isRecycled()) {
+//                    bitmap.recycle();
+//                }
+//                baos.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return new byte[0];
     }
 
 }

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         resourcesInstance = this.getResources();
         m_DataStorage = new DataStorage(getApplicationContext());
-
+        //m_DataStorage.deleteAllPerson();
         initRecyclerView();
         initFloatingMenu();
 
@@ -136,11 +136,11 @@ public class MainActivity extends AppCompatActivity {
                 .attachTo(actionButton)
                 .build();
 
-        //add button click listener
         addItem.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                addFunc();
+            public void onClick(View view) {
+                showDetailActivity(null, "add");
             }
         });
         //multiselect button click listener
