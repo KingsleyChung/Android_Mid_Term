@@ -45,17 +45,17 @@ public class DataStorage {
         if (data == null) {
             data = new ArrayList<Person>();
             dbOperate = new DBOperate(context);
-            //data = dbOperate.returnAll();
-            //if(data.size() == 0) {
+            data = dbOperate.returnAll();
+            if(data.size() == 0) {
                 initizateDB();
-            //}
+            }
         }
     }
 
     public boolean addPerson(Person person) {
         data.add(person);
-        return true;
-        //return dbOperate.insertOne(person);
+        //return true;
+        return dbOperate.insertOne(person);
     }
 
     public int deletePerson(String name) {
@@ -64,8 +64,8 @@ public class DataStorage {
                 data.remove(i);
             }
         }
-        return 1;
-        //return dbOperate.deleteOne(name);
+        //return 1;
+        return dbOperate.deleteOne(name);
     }
 
     public boolean deleteSomePerson(ArrayList<String> name) {
