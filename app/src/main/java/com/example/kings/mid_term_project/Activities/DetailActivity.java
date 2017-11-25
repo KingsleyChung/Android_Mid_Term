@@ -38,7 +38,7 @@ public class DetailActivity extends Activity {
         m_Time = findViewById(R.id.detail_time);
         m_Description = findViewById(R.id.detail_descripion);
 
-        m_Icon.setImageBitmap(m_Data.getBitmap());
+        //m_Icon.setImageBitmap(m_Data.getBitmap());
         m_Icon.setImageBitmap(DataStorage.getBitmapFromName(m_Data.getName()));
         m_Name.setText(m_Data.getName());
         m_Gender.setText("性别：" + m_Data.getSex());

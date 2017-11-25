@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         resourcesInstance = this.getResources();
         m_DataStorage = new DataStorage(getApplicationContext());
-
+        //m_DataStorage.deleteAllPerson();
         initRecyclerView();
         initFloatingMenu();
 
