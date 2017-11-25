@@ -42,8 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initFloatingMenu();
+
     }
 
+    @Override
+    protected void onResume() {
+        initRecyclerView();
+        super.onResume();
+    }
     private void initRecyclerView() {
         m_RecyclerAdapter = new MyRecyclerAdapter(this, m_DataStorage.getData());
         m_RecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnItemClickListener() {

@@ -1,8 +1,12 @@
 package com.example.kings.mid_term_project;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.widget.RemoteViews;
 
 import com.example.kings.mid_term_project.Activities.MainActivity;
 import com.example.kings.mid_term_project.DataBase.DBOperate;
@@ -15,8 +19,8 @@ import java.util.ArrayList;
 
 public class DataStorage {
 
-    private static ArrayList<Person> data;
-    private DBOperate dbOperate;
+    private static ArrayList<Person> data = null;
+    private static DBOperate dbOperate;
     public DataStorage(Context context) {
         init(context);
     }
@@ -33,30 +37,44 @@ public class DataStorage {
         initPerson[7] = new Person("大喬", "女", "史实人物", "?--?", "江东乔国老有二女，大乔和小乔。大乔有沉鱼落雁之资，倾国倾城之容。孙策征讨江东，攻取皖城，娶大乔为妻。自古美女配英雄，伯符大乔堪绝配。曹操赤壁鏖兵，虎视江东，曾有揽二乔娱暮年，还足平生之愿。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.daqiao));
         initPerson[8] = new Person("孫權", "男", "史实人物", "182--252", "孙权19岁就继承了其兄孙策之位，力据江东，击败了黄祖。后东吴联合刘备，在赤壁大战击溃了曹操军。东吴后来又和曹操军在合肥附近鏖战，并从刘备手中夺回荆州、杀死关羽、大破刘备的讨伐军。曹丕称帝后孙权先向北方称臣，后自己建吴称帝，迁都建业。\n", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.sunqun));
         initPerson[9] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 3; ++i)
             addPerson(initPerson[i]);
     }
 
     private void init(Context context) {
-        data = new ArrayList<Person>();
-        dbOperate = new DBOperate(context);
-        data = dbOperate.returnAll();
-        if(data.size() == 0) {
-            initizateDB();
+        if (data == null) {
+            data = new ArrayList<Person>();
+            dbOperate = new DBOperate(context);
+            data = dbOperate.returnAll();
+            if(data.size() == 0) {
+                initizateDB();
+            }
         }
     }
 
-    private boolean addPerson(Person person) {
+    public boolean addPerson(Person person) {
         data.add(person);
         return dbOperate.insertOne(person);
     }
 
-    private int deletePerson(int index, String name) {
-        data.remove(index);
+    public int deletePerson(String name) {
+        for (int i = 0; i < data.size();++i) {
+            if (data.get(i).getName().equals(name)) {
+                data.remove(i);
+            }
+        }
         return dbOperate.deleteOne(name);
     }
 
-    private int updatePerson(int index, String originalName, Person person) {
+    public boolean deleteSomePerson(ArrayList<String> name) {
+        for (int i = 0; i< name.size(); ++i)
+            if(deletePerson(name.get(i)) != 1) {
+                return false;
+            }
+        return true;
+    }
+
+    public int updatePerson(int index, String originalName, Person person) {
         data.get(index).setName(person.getName());
         data.get(index).setBitmap(person.getBitmap());
         data.get(index).setCategory(person.getCategory());
@@ -66,8 +84,9 @@ public class DataStorage {
         return dbOperate.updateOne(originalName, person);
     }
 
-    private ArrayList<Person> searchPerson(String name) {
+    public ArrayList<Person> searchPerson(String name) {
         return dbOperate.searchMany(name);
+
     }
 
     public static ArrayList<Person> getData() {
@@ -81,5 +100,6 @@ public class DataStorage {
         }
         return null;
     }
+
 }
 
