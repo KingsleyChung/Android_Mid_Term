@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.example.kings.mid_term_project.DataBase.Person;
@@ -36,8 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initFloatingMenu();
+
     }
 
+    @Override
+    protected void onResume() {
+        initRecyclerView();
+        super.onResume();
+    }
     private void initRecyclerView() {
         m_RecyclerAdapter = new MyRecyclerAdapter(this, m_DataStorage.getData());
         m_RecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnItemClickListener() {
