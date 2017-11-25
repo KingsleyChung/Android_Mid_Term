@@ -1,12 +1,9 @@
 package com.example.kings.mid_term_project;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.RemoteViews;
 
 import com.example.kings.mid_term_project.Activities.MainActivity;
 import com.example.kings.mid_term_project.DataBase.DBOperate;
@@ -38,7 +35,9 @@ public class DataStorage {
         initPerson[8] = new Person("孫權", "男", "史实人物", "182--252", "孙权19岁就继承了其兄孙策之位，力据江东，击败了黄祖。后东吴联合刘备，在赤壁大战击溃了曹操军。东吴后来又和曹操军在合肥附近鏖战，并从刘备手中夺回荆州、杀死关羽、大破刘备的讨伐军。曹丕称帝后孙权先向北方称臣，后自己建吴称帝，迁都建业。\n", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.sunqun));
         initPerson[9] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
         for (int i = 0; i < 10; ++i)
-            addPerson(initPerson[i]);
+            data.add(initPerson[i]);
+        MyTask myTask = new MyTask();
+        myTask.execute(0);
     }
 
     private void init(Context context) {
@@ -52,18 +51,24 @@ public class DataStorage {
         }
     }
 
-    public static boolean addPerson(Person person) {
+    public boolean addPerson(Person person) {
         data.add(person);
+        //return true;
         return dbOperate.insertOne(person);
     }
 
-    public static int deletePerson(String name) {
+    public int deletePerson(String name) {
         for (int i = 0; i < data.size();++i) {
             if (data.get(i).getName().equals(name)) {
                 data.remove(i);
             }
         }
+        //return 1;
         return dbOperate.deleteOne(name);
+    }
+
+    public void deleteAllPerson() {
+        new MyTask().execute(1);
     }
 
     public boolean deleteSomePerson(ArrayList<String> name) {
@@ -74,7 +79,7 @@ public class DataStorage {
         return true;
     }
 
-    public static int updatePerson(String originalName, Person person) {
+    public int updatePerson(String originalName, Person person) {
         int position = -1;
         for (int i = 0; i < data.size();++i) {
             if (data.get(i).getName().equals(originalName)) {
@@ -106,6 +111,19 @@ public class DataStorage {
         }
         return null;
     }
+    class MyTask extends AsyncTask<Integer,Void,Void> {
 
+        @Override
+        protected Void doInBackground(Integer... arg) {
+            if(arg[0] == 0) {
+                for (int i = 0; i < 10; ++i)
+                    dbOperate.insertOne(data.get(i));
+            }
+            else if (arg[0] == 1) {
+                dbOperate.deleteAll();
+            }
+            return null;
+        }
+    }
 }
 

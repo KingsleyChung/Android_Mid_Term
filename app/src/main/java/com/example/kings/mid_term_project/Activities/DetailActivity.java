@@ -23,6 +23,8 @@ import com.example.kings.mid_term_project.R;
 
 public class DetailActivity extends Activity {
 
+    DataStorage m_DataStorage;
+
     private Person m_Data;
     private ImageView m_Icon;
     private EditText m_Name, m_Gender, m_Category, m_Time, m_Description;
@@ -55,14 +57,14 @@ public class DetailActivity extends Activity {
                     case "edit":
                         Bitmap temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
                         Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
-                        DataStorage.updatePerson(m_Data.getName(), temp);
+                        m_DataStorage.updatePerson(m_Data.getName(), temp);
                         m_Data = temp;
                         setShowMode();
                         break;
                     case "add":
                         temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
                         temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
-                        if (DataStorage.addPerson(temp)) {
+                        if (m_DataStorage.addPerson(temp)) {
                             m_Data = temp;
                             setShowMode();
                         } else {
@@ -78,7 +80,7 @@ public class DetailActivity extends Activity {
             public void onClick(View v) {
                 switch (status) {
                     case "show":
-                        DataStorage.deletePerson(m_Data.getName());
+                        m_DataStorage.deletePerson(m_Data.getName());
                         finish();
                         break;
                     case "edit":
@@ -93,6 +95,7 @@ public class DetailActivity extends Activity {
     }
 
     private void initData() {
+        m_DataStorage = new DataStorage(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
         status = bundle.getString("Status");
         if (status.equals("show") || status.equals("edit")) m_Data = bundle.getParcelable("Person");
