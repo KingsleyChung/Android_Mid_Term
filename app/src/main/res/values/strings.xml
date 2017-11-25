@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Mid_Term_Project</string>
+    <string-array name="category">
+        <item>史实人物</item>
+        <item>虚构人物</item>
+    </string-array>
 </resources>

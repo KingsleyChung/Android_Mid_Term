@@ -37,7 +37,7 @@ public class DataStorage {
         initPerson[7] = new Person("大喬", "女", "史实人物", "?--?", "江东乔国老有二女，大乔和小乔。大乔有沉鱼落雁之资，倾国倾城之容。孙策征讨江东，攻取皖城，娶大乔为妻。自古美女配英雄，伯符大乔堪绝配。曹操赤壁鏖兵，虎视江东，曾有揽二乔娱暮年，还足平生之愿。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.daqiao));
         initPerson[8] = new Person("孫權", "男", "史实人物", "182--252", "孙权19岁就继承了其兄孙策之位，力据江东，击败了黄祖。后东吴联合刘备，在赤壁大战击溃了曹操军。东吴后来又和曹操军在合肥附近鏖战，并从刘备手中夺回荆州、杀死关羽、大破刘备的讨伐军。曹丕称帝后孙权先向北方称臣，后自己建吴称帝，迁都建业。\n", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.sunqun));
         initPerson[9] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 10; ++i)
             addPerson(initPerson[i]);
     }
 
