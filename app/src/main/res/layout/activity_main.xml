@@ -11,6 +11,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/search_view"
         android:visibility="invisible"
+        android:queryHint="请输入搜索内容"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_view"
         />
 
     <ImageView
