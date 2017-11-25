@@ -87,7 +87,7 @@ public class DBOperate {
         ContentValues cValue = new ContentValues();
         cValue.put("name", person.getName());
         cValue.put("sex", person.getSex());
-        cValue.put("category", person.getTime());
+        cValue.put("category", person.getCategory());
         cValue.put("time", person.getTime());
         cValue.put("description", person.getDecription());
         cValue.put("avatar", bitmabToBytes(person.getBitmap()));

@@ -1,12 +1,9 @@
 package com.example.kings.mid_term_project;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.RemoteViews;
 
 import com.example.kings.mid_term_project.Activities.MainActivity;
 import com.example.kings.mid_term_project.DataBase.DBOperate;
@@ -60,13 +57,13 @@ public class DataStorage {
         }
     }
 
-    public static boolean addPerson(Person person) {
+    public boolean addPerson(Person person) {
         data.add(person);
         //return true;
         return dbOperate.insertOne(person);
     }
 
-    public static int deletePerson(String name) {
+    public int deletePerson(String name) {
         for (int i = 0; i < data.size();++i) {
             if (data.get(i).getName().equals(name)) {
                 data.remove(i);
@@ -88,7 +85,7 @@ public class DataStorage {
         return true;
     }
 
-    public static int updatePerson(String originalName, Person person) {
+    public int updatePerson(String originalName, Person person) {
         int position = -1;
         for (int i = 0; i < data.size();++i) {
             if (data.get(i).getName().equals(originalName)) {

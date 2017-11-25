@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/Mid_Term_Project.iml" filepath="$PROJECT_DIR$/Mid_Term_Project.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/Android_Mid_Term.iml" filepath="$PROJECT_DIR$/Android_Mid_Term.iml" />
+>>>>>>> 8dc5b4591adfa4674f201e7c43f45206f5613c33
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
