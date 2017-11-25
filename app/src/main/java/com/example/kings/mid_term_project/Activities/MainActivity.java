@@ -11,6 +11,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -22,12 +25,15 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView m_RecyclerView;
     private MyRecyclerAdapter m_RecyclerAdapter;
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
+    private boolean isDelete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initFloatingMenu();
+
     }
 
+    @Override
+    protected void onResume() {
+        initRecyclerView();
+        super.onResume();
+    }
     private void initRecyclerView() {
         m_RecyclerAdapter = new MyRecyclerAdapter(this, m_DataStorage.getData());
         m_RecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnItemClickListener() {
@@ -62,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (i == 0) showDetailActivity(temp_data, "edit");
                         else {
-                            m_DataStorage.deletePerson(position, temp_data.getName());
+                            m_DataStorage.deletePerson(temp_data.getName());
                             m_RecyclerAdapter.notifyDataSetChanged();
                         }
                     }
@@ -122,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
                 .addSubActionView(search)
                 .attachTo(actionButton)
                 .build();
+
+        //multiselect button click listener
+        multiSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectFunc();
+            }
+        });
     }
 
     private void showDetailActivity(Person data, String status) {
@@ -133,5 +153,52 @@ public class MainActivity extends AppCompatActivity {
         }
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void addFunc() {
+
+    }
+
+    private void selectFunc() {
+        //select button visible
+        isDelete = !isDelete;
+        m_RecyclerAdapter.set_isDelete(isDelete);
+        int size = m_RecyclerAdapter.getItemCount();
+        for (int i = 0; i < size; i++) {
+            m_RecyclerAdapter.notifyItemChanged(i);
+        }
+
+        deleteFunc();
+    }
+
+    private void deleteFunc() {
+
+        //delete button visible
+        final Button deleteButton = (Button)findViewById(R.id.delete_button);
+        if (isDelete) {
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            deleteButton.setVisibility(View.INVISIBLE);
+        }
+
+        //delete button click function
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
+                ArrayList<String> deleteList = new ArrayList<>();
+                for (int i = 0; i < deletePerson.size(); i++) {
+                    if (deletePerson.get(i).equals(1)) {
+                        deleteList.add(DataStorage.getData().get(i).getName());
+                        //System.out.println(DataStorage.getData().get(i).getName());
+                    }
+                }
+            }
+        });
+    }
+
+    private void searchFunc() {
+
     }
 }
