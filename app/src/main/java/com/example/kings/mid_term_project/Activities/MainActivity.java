@@ -135,6 +135,13 @@ public class MainActivity extends AppCompatActivity {
                 .attachTo(actionButton)
                 .build();
 
+        addItem.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                showDetailActivity(null, "add");
+            }
+        });
         //multiselect button click listener
         multiSelect.setOnClickListener(new View.OnClickListener() {
             @Override

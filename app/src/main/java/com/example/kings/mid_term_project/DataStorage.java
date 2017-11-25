@@ -52,7 +52,7 @@ public class DataStorage {
         }
     }
 
-    public boolean addPerson(Person person) {
+    public static boolean addPerson(Person person) {
         data.add(person);
         return dbOperate.insertOne(person);
     }
@@ -67,20 +67,26 @@ public class DataStorage {
     }
 
     public boolean deleteSomePerson(ArrayList<String> name) {
-        for (int i = 0; i< name.size(); ++i)
+        for (int i = 0; i < name.size(); ++i)
             if(deletePerson(name.get(i)) != 1) {
                 return false;
             }
         return true;
     }
 
-    public int updatePerson(int index, String originalName, Person person) {
-        data.get(index).setName(person.getName());
-        data.get(index).setBitmap(person.getBitmap());
-        data.get(index).setCategory(person.getCategory());
-        data.get(index).setDecription(person.getDecription());
-        data.get(index).setSex(person.getSex());
-        data.get(index).setTime(person.getTime());
+    public static int updatePerson(String originalName, Person person) {
+        int position = -1;
+        for (int i = 0; i < data.size();++i) {
+            if (data.get(i).getName().equals(originalName)) {
+                position = i;
+            }
+        }
+        data.get(position).setName(person.getName());
+        data.get(position).setBitmap(person.getBitmap());
+        data.get(position).setCategory(person.getCategory());
+        data.get(position).setDecription(person.getDecription());
+        data.get(position).setSex(person.getSex());
+        data.get(position).setTime(person.getTime());
         return dbOperate.updateOne(originalName, person);
     }
 
