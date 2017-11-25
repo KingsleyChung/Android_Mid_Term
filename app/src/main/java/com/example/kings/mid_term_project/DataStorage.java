@@ -46,17 +46,17 @@ public class DataStorage {
         }
     }
 
-    private boolean addPerson(Person person) {
+    public boolean addPerson(Person person) {
         data.add(person);
         return dbOperate.insertOne(person);
     }
 
-    private int deletePerson(int index, String name) {
+    public int deletePerson(int index, String name) {
         data.remove(index);
         return dbOperate.deleteOne(name);
     }
 
-    private int updatePerson(int index, String originalName, Person person) {
+    public int updatePerson(int index, String originalName, Person person) {
         data.get(index).setName(person.getName());
         data.get(index).setBitmap(person.getBitmap());
         data.get(index).setCategory(person.getCategory());

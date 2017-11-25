@@ -1,8 +1,10 @@
 package com.example.kings.mid_term_project.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,6 +12,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.kings.mid_term_project.DataBase.Person;
 import com.example.kings.mid_term_project.DataStorage;
@@ -44,12 +47,36 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                 Person temp_data = m_DataStorage.getData().get(position);
-                showDetailActivity(temp_data);
+                showDetailActivity(temp_data, "show");
             }
 
             @Override
-            public void onLongClick(int position) {
+            public void onLongClick(final int position) {
+                final Person temp_data = m_DataStorage.getData().get(position);
+                AlertDialog.Builder m_alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                m_alertDialogBuilder.setTitle("更多");
 
+                final String[] options = {"编辑", "删除"};
+                m_alertDialogBuilder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (i == 0) showDetailActivity(temp_data, "edit");
+                        else {
+                            m_DataStorage.deletePerson(position, temp_data.getName());
+                            m_RecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+                m_alertDialogBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "您选择了[取消]", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                m_alertDialogBuilder.setCancelable(true);
+                AlertDialog m_alertDialog = m_alertDialogBuilder.create();
+                m_alertDialog.show();
             }
         });
         m_RecyclerView = findViewById(R.id.characterList);
@@ -97,11 +124,13 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void showDetailActivity(Person data) {
+    private void showDetailActivity(Person data, String status) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("Person", data);
-        //bundle.putParcelable("Icon", data.getBitmap());
+        bundle.putString("Status", status);
+        if (status.equals("show") || status.equals("edit")) {
+            bundle.putParcelable("Person", data);
+        }
         intent.putExtras(bundle);
         startActivity(intent);
     }
