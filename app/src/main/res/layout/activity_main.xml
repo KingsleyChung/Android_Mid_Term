@@ -6,6 +6,13 @@
     tools:context="com.example.kings.mid_term_project.Activities.MainActivity"
     android:orientation="vertical" >
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_view"
+        android:visibility="invisible"
+        />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"

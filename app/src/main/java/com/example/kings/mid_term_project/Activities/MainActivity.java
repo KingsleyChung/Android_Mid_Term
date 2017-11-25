@@ -13,8 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.kings.mid_term_project.DataBase.Person;
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
     private boolean isDelete = false;
+    private boolean isSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,13 @@ public class MainActivity extends AppCompatActivity {
                 selectFunc();
             }
         });
+        //search button click listener
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchFunc();
+            }
+        });
     }
 
     private void showDetailActivity(Person data, String status) {
@@ -179,33 +187,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteFunc() {
-
         //delete button visible
         final Button deleteButton = (Button)findViewById(R.id.delete_button);
-        if (isDelete) {
+        if (isDelete)
             deleteButton.setVisibility(View.VISIBLE);
-        }
-        else {
+        else
             deleteButton.setVisibility(View.INVISIBLE);
-        }
 
         //delete button click function
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
-                ArrayList<String> deleteList = new ArrayList<>();
-                for (int i = 0; i < deletePerson.size(); i++) {
-                    if (deletePerson.get(i).equals(1)) {
-                        deleteList.add(DataStorage.getData().get(i).getName());
-                        //System.out.println(DataStorage.getData().get(i).getName());
+                if (deletePerson != null) {
+                    ArrayList<String> deleteList = new ArrayList<>();
+                    for (int i = 0; i < deletePerson.size(); i++) {
+                        if (deletePerson.get(i).equals(1)) {
+                            deleteList.add(DataStorage.getData().get(i).getName());
+
+                        }
                     }
+                    m_DataStorage.deleteSomePerson(deleteList);
+                    m_RecyclerAdapter.notifyDataSetChanged();
                 }
+
             }
         });
     }
 
     private void searchFunc() {
+        final SearchView searchView = (SearchView)findViewById(R.id.search_view);
+        isSearch = !isSearch;
+        if (isSearch)
+            searchView.setVisibility(View.VISIBLE);
+        else
+            searchView.setVisibility(View.INVISIBLE);
+
 
     }
 }
