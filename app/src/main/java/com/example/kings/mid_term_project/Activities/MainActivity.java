@@ -12,7 +12,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static Resources resourcesInstance;
     private boolean isDelete = false;
     private boolean isSearch = false;
+    ArrayList<Person> relativePerson = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,8 +251,52 @@ public class MainActivity extends AppCompatActivity {
         else {
             resetStatus();
         }
+        //listview
+        final ListView listView = (ListView)findViewById(R.id.list_view);
 
+        //SearchView and ListView visible
+        m_SearchView = (SearchView)findViewById(R.id.search_view);
+        isSearch = !isSearch;
+        if (isSearch) {
+            m_SearchView.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.VISIBLE);
+        }
+        else {
+            m_SearchView.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.INVISIBLE);
+        }
+        m_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                System.out.println(newText);
+                if (!newText.equals("")) {
+                    relativePerson = m_DataStorage.searchPerson(newText);
+                    listViewItemUpdate(listView, relativePerson);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void listViewItemUpdate(ListView listView, final ArrayList<Person> relativePerson) {
+        ArrayList<String> relativeName = new ArrayList<>();
+        for (int i = 0; i < relativePerson.size(); i++) {
+            relativeName.add(relativePerson.get(i).getName());
+        }
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_item, relativeName);
+        listView.setAdapter(arrayAdapter);
+        //ListView item click listener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDetailActivity(relativePerson.get(position), "show");
+            }
+        });
     }
 
     private void resetStatus() {

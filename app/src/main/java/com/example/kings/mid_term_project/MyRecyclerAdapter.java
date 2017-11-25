@@ -41,7 +41,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     public void initDeletePerson() {
         deletePerson = new ArrayList<>();
         int size = getItemCount();
-        System.out.println(size);
         for (int i = 0; i < size; i++) {
             deletePerson.add(0);
         }

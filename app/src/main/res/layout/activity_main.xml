@@ -9,9 +9,22 @@
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:id="@+id/horizontal_guideLine"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.44"/>
+=======
+        android:id="@+id/search_view"
+        android:visibility="invisible"
+        android:queryHint="请输入搜索内容"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_view"
+        />
+>>>>>>> 8b665c6fe803c5229cb814e1f5a4e7ba68141cb1
 
     <ImageView
         android:layout_width="match_parent"
