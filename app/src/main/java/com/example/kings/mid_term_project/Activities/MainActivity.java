@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                         //System.out.println(DataStorage.getData().get(i).getName());
                     }
                 }
+                m_DataStorage.deleteSomePerson(deleteList);
             }
         });
     }
