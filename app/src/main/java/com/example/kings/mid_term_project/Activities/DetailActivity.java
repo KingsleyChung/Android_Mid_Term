@@ -1,10 +1,19 @@
 package com.example.kings.mid_term_project.Activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,6 +43,7 @@ public class DetailActivity extends Activity {
 
     private String category;
     private String status;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +65,27 @@ public class DetailActivity extends Activity {
                         setEditMode();
                         break;
                     case "edit":
-                        Bitmap temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        Person temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
-                        m_DataStorage.updatePerson(m_Data.getName(), temp);
-                        m_Data = temp;
-                        setShowMode();
-                        break;
-                    case "add":
-                        temp_bitmap =((BitmapDrawable) m_Icon.getDrawable()).getBitmap();
-                        temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), temp_bitmap);
-                        if (m_DataStorage.addPerson(temp)) {
+                        Person temp;
+                        if (isComplete()) {
+                            temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), bitmap);
+                            m_DataStorage.updatePerson(m_Data.getName(), temp);
                             m_Data = temp;
                             setShowMode();
                         } else {
-                            Toast.makeText(getApplicationContext(),"此人物已存在", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"请完善人物信息", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case "add":
+                        if (isComplete()) {
+                            temp = new Person(m_Name.getText().toString(), m_Gender.getText().toString(), category, m_Time.getText().toString(), m_Description.getText().toString(), bitmap);
+                            if (m_DataStorage.addPerson(temp)) {
+                                m_Data = temp;
+                                setShowMode();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "此人物已存在", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(),"请完善人物信息", Toast.LENGTH_SHORT).show();
                         }
                         break;
                 }
@@ -92,7 +109,52 @@ public class DetailActivity extends Activity {
                 }
             }
         });
+
+        m_Icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (status) {
+                    case "show":
+                        break;
+                    case "edit":
+                        selectPhoto();
+                        break;
+                    case "add":
+                        selectPhoto();
+                        break;
+                }
+            }
+        });
     }
+
+    private void selectPhoto() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 0);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 1);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //获取图片路径
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumns = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePathColumns[0]);
+            String imagePath = c.getString(columnIndex);
+            //showImage(imagePath);
+            bitmap = BitmapFactory.decodeFile(imagePath);
+            m_Icon.setImageBitmap(bitmap);
+            c.close();
+        }
+    }
+
 
     private void initData() {
         m_DataStorage = new DataStorage(getApplicationContext());
@@ -119,11 +181,13 @@ public class DetailActivity extends Activity {
 
     private void setShowMode() {
         status = "show";
-        m_Icon.setImageBitmap(DataStorage.getBitmapFromName(m_Data.getName()));
         m_Name.setText(m_Data.getName());
         m_Gender.setText(m_Data.getSex());
         m_Time.setText(m_Data.getTime());
         m_Description.setText(m_Data.getDecription());
+
+        bitmap = DataStorage.getBitmapFromName(m_Data.getName());
+        m_Icon.setImageBitmap(bitmap);
 
         m_CategorySpinner.setVisibility(View.INVISIBLE);
         m_Category.setVisibility(View.VISIBLE);
@@ -142,7 +206,7 @@ public class DetailActivity extends Activity {
 
     private void setEditMode() {
         status = "edit";
-        m_Icon.setImageBitmap(DataStorage.getBitmapFromName(m_Data.getName()));
+        m_Icon.setImageBitmap(bitmap);
         m_Name.setText(m_Data.getName());
         m_Gender.setText(m_Data.getSex());
         m_Time.setText(m_Data.getTime());
@@ -151,8 +215,13 @@ public class DetailActivity extends Activity {
         m_CategorySpinner.setVisibility(View.VISIBLE);
         m_Category.setVisibility(View.INVISIBLE);
         m_Category_Title.setVisibility(View.INVISIBLE);
-        if (m_Data.getCategory().equals("虚构人物")) m_CategorySpinner.setSelection(1);
-        else m_CategorySpinner.setSelection(0);
+        if (m_Data.getCategory().equals("虚构人物")) {
+            m_CategorySpinner.setSelection(1);
+            category = "虚构人物";
+        } else {
+            m_CategorySpinner.setSelection(0);
+            category = "史实人物";
+        }
 
         m_Submit.setText("确定");
         m_Cancel.setText("取消");
@@ -169,7 +238,6 @@ public class DetailActivity extends Activity {
 
     private void setAddMode() {
         status = "add";
-        //m_Icon.setImageBitmap(DataStorage.getBitmapFromName(m_Data.getName()));
         m_Name.setText("");
         m_Gender.setText("");
         m_Time.setText("");
@@ -207,5 +275,13 @@ public class DetailActivity extends Activity {
 
             }
         });
+    }
+
+    private boolean isComplete() {
+        return !(m_Name.getText().toString().equals("")
+                || m_Gender.getText().toString().equals("")
+                || m_Time.getText().toString().equals("")
+                || m_Description.getText().toString().equals("")
+                || bitmap == null);
     }
 }

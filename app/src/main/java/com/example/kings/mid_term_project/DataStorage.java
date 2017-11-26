@@ -23,7 +23,7 @@ public class DataStorage {
     }
 
     private void initizateDB() {
-        Person [] initPerson = new Person[15];
+        Person [] initPerson = new Person[10];
         initPerson[0] = new Person("曹操", "男", "史实人物", "155--220", "曹操是西园八校尉之一，曾只身行刺董卓，失败后和袁绍共同联合天下诸侯讨伐董卓，后独自发展自身势力，一生中先后战胜了袁术、吕布、张绣、袁绍、刘表、张鲁、马超等割据势力，统一了北方。但是在南下讨伐江东的战役中，曹操在赤壁惨败。后来在和蜀汉的汉中争夺战中，曹操再次无功而返。曹操一生未称帝，他病死后，曹丕继位后不久称帝，追封曹操为魏武皇帝。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.caocao));
         initPerson[1] = new Person("刘备", "男", "史实人物", "161--223", "刘备，蜀汉的开国皇帝，汉景帝之子中山靖王刘胜的后代。刘备少年孤贫，以贩鞋织草席为生。黄巾起义时，刘备与关羽、张飞桃园结义，成为异姓兄弟，一同剿除黄巾，有功，任安喜县尉，不久辞官；董卓乱政之际，刘备随公孙瓒讨伐董卓，三人在虎牢关战败吕布。后诸侯割据，刘备势力弱小，经常寄人篱下，先后投靠过公孙瓒、曹操、袁绍、刘表等人，几经波折，却仍无自己的地盘。赤壁之战前夕，刘备在荆州三顾茅庐，请诸葛亮出山辅助，在赤壁之战中，联合孙权打败曹操，奠定了三分天下的基础。刘备在诸葛亮的帮助下占领荆州，不久又进兵益州，夺取汉中，建立了横跨荆益两州的政权。后关羽战死，荆州被孙权夺取，刘备大怒，于称帝后伐吴，在夷陵之战中为陆逊用火攻打得大败，不久病逝于白帝城，临终托孤于诸葛亮。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.liubei));
         initPerson[2] = new Person("小喬", "女", "史实人物", "?--?", "庐江皖县桥国老次女，秀美绝伦，貌压群芳，又琴棋书画无所不通周瑜攻取皖城，迎娶小乔为妻。周郎小乔英雄美女、郎才女貌 ，被流传为千古佳话。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.xiaoqiao));
@@ -34,13 +34,7 @@ public class DataStorage {
         initPerson[7] = new Person("大喬", "女", "史实人物", "?--?", "江东乔国老有二女，大乔和小乔。大乔有沉鱼落雁之资，倾国倾城之容。孙策征讨江东，攻取皖城，娶大乔为妻。自古美女配英雄，伯符大乔堪绝配。曹操赤壁鏖兵，虎视江东，曾有揽二乔娱暮年，还足平生之愿。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.daqiao));
         initPerson[8] = new Person("孫權", "男", "史实人物", "182--252", "孙权19岁就继承了其兄孙策之位，力据江东，击败了黄祖。后东吴联合刘备，在赤壁大战击溃了曹操军。东吴后来又和曹操军在合肥附近鏖战，并从刘备手中夺回荆州、杀死关羽、大破刘备的讨伐军。曹丕称帝后孙权先向北方称臣，后自己建吴称帝，迁都建业。\n", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.sunqun));
         initPerson[9] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        initPerson[10] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        initPerson[11] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        initPerson[12] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        initPerson[13] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-        initPerson[14] = new Person("安阳公主", "女", "史实人物", "?--?", "虎贲中郎将荀恽妻，曹操之女。献帝建安中嫁给荀恽，后称安阳公主。", BitmapFactory.decodeResource(MainActivity.resourcesInstance, R.mipmap.anyang));
-
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < 10; ++i)
             data.add(initPerson[i]);
         MyTask myTask = new MyTask();
         myTask.execute(0);
@@ -59,7 +53,6 @@ public class DataStorage {
 
     public boolean addPerson(Person person) {
         data.add(person);
-        //return true;
         return dbOperate.insertOne(person);
     }
 
@@ -69,7 +62,6 @@ public class DataStorage {
                 data.remove(i);
             }
         }
-        //return 1;
         return dbOperate.deleteOne(name);
     }
 
@@ -103,12 +95,6 @@ public class DataStorage {
 
     public ArrayList<Person> searchPerson(String name) {
         return dbOperate.searchMany(name);
-//        ArrayList<Person> tmp = dbOperate.searchMany(name);
-//        ArrayList<String> relativeName = new ArrayList<>();
-//        for (int i = 0; i < tmp.size(); i++) {
-//            relativeName.add(tmp.get(i).getName());
-//        }
-//        return relativeName;
     }
 
     public static ArrayList<Person> getData() {

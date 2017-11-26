@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -33,6 +32,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView m_RecyclerView;
+    private ImageView m_MenuBtn;
+    private android.support.design.widget.FloatingActionButton m_DeleteButton;
+    private SearchView m_SearchView;
+    private ListView m_ListView;
+    private View m_Glass;
+    private FloatingActionMenu m_ActionMenu;
     private MyRecyclerAdapter m_RecyclerAdapter;
     private DataStorage m_DataStorage;
     public static Resources resourcesInstance;
@@ -63,12 +68,14 @@ public class MainActivity extends AppCompatActivity {
         m_RecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
+                resetStatus();
                 Person temp_data = m_DataStorage.getData().get(position);
                 showDetailActivity(temp_data, "show");
             }
 
             @Override
             public void onLongClick(final int position) {
+                resetStatus();
                 final Person temp_data = m_DataStorage.getData().get(position);
                 AlertDialog.Builder m_alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 m_alertDialogBuilder.setTitle("更多");
@@ -105,10 +112,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initFloatingMenu() {
-        ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
+
+        m_SearchView = findViewById(R.id.search_view);
+        m_Glass = findViewById(R.id.frosted_glass);
+        m_DeleteButton = findViewById(R.id.delete_button);
+        m_ListView = findViewById(R.id.list_view);
+
+        m_MenuBtn = new ImageView(this); // Create an icon
+        m_MenuBtn.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
+                .setContentView(m_MenuBtn)
                 .build();
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.red)));
 
@@ -133,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         SubActionButton search = itemBuilder.setContentView(itemIcon).build();
         search.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.yellow)));
 
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+        m_ActionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(addItem)
                 .addSubActionView(multiSelect)
                 .addSubActionView(search)
@@ -144,10 +157,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                resetStatus();
                 showDetailActivity(null, "add");
             }
         });
-        //multiselect button click listener
         multiSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +172,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchFunc();
+            }
+        });
+        m_MenuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isDelete == false && isSearch == false && !m_ActionMenu.isOpen()) m_ActionMenu.open(true);
+                resetStatus();
             }
         });
     }
@@ -174,32 +194,29 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addFunc() {
+    private void selectFunc() {
+        isDelete = true;
+        updateSelection();
+        m_ActionMenu.close(true);
+        m_MenuBtn.setImageResource(R.mipmap.back);
 
+        deleteFunc();
     }
 
-    private void selectFunc() {
-        //select button visible
-        isDelete = !isDelete;
+    private void updateSelection() {
         m_RecyclerAdapter.set_isDelete(isDelete);
         int size = m_RecyclerAdapter.getItemCount();
         for (int i = 0; i < size; i++) {
             m_RecyclerAdapter.notifyItemChanged(i);
         }
-
-        deleteFunc();
     }
 
     private void deleteFunc() {
-        //delete button visible
-        final Button deleteButton = (Button)findViewById(R.id.delete_button);
         if (isDelete)
-            deleteButton.setVisibility(View.VISIBLE);
+            m_DeleteButton.setVisibility(View.VISIBLE);
         else
-            deleteButton.setVisibility(View.INVISIBLE);
-
-        //delete button click function
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+            m_DeleteButton.setVisibility(View.INVISIBLE);
+        m_DeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<Integer> deletePerson = m_RecyclerAdapter.deletePersonList();
@@ -214,42 +231,42 @@ public class MainActivity extends AppCompatActivity {
                     m_DataStorage.deleteSomePerson(deleteList);
                     m_RecyclerAdapter.notifyDataSetChanged();
                     m_RecyclerAdapter.initDeletePerson();
+                    resetStatus();
                 }
             }
         });
     }
 
     private void searchFunc() {
-        //listview
-        final ListView listView = (ListView)findViewById(R.id.list_view);
+        m_ActionMenu.close(true);
+        if (!isSearch) {
+            isSearch = !isSearch;
+            m_SearchView.setVisibility(View.VISIBLE);
+            m_SearchView.setIconifiedByDefault(false);
+            m_SearchView.setQueryHint("请输入人物名字");
+            m_Glass.setVisibility(View.VISIBLE);
+            m_ListView.setVisibility(View.VISIBLE);
+            m_MenuBtn.setImageResource(R.mipmap.back);
+            m_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
 
-        //SearchView and ListView visible
-        final SearchView searchView = (SearchView)findViewById(R.id.search_view);
-        isSearch = !isSearch;
-        if (isSearch) {
-            searchView.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    System.out.println(newText);
+                    if (!newText.equals("")) {
+                        relativePerson = m_DataStorage.searchPerson(newText);
+                        listViewItemUpdate(m_ListView, relativePerson);
+                    }
+                    return false;
+                }
+            });
         }
         else {
-            searchView.setVisibility(View.INVISIBLE);
-            listView.setVisibility(View.INVISIBLE);
+            resetStatus();
         }
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                System.out.println(newText);
-                if (!newText.equals("")) {
-                    relativePerson = m_DataStorage.searchPerson(newText);
-                    listViewItemUpdate(listView, relativePerson);
-                }
-                return false;
-            }
-        });
     }
 
     private void listViewItemUpdate(ListView listView, final ArrayList<Person> relativePerson) {
@@ -259,12 +276,23 @@ public class MainActivity extends AppCompatActivity {
         }
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_item, relativeName);
         listView.setAdapter(arrayAdapter);
-        //ListView item click listener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 showDetailActivity(relativePerson.get(position), "show");
             }
         });
+    }
+
+    private void resetStatus() {
+        isDelete = false;
+        isSearch = false;
+        m_MenuBtn.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
+        m_DeleteButton.setVisibility(View.INVISIBLE);
+        m_SearchView.setVisibility(View.INVISIBLE);
+        m_Glass.setVisibility(View.INVISIBLE);
+        m_ListView.setVisibility(View.INVISIBLE);
+        if (!isDelete) updateSelection();
+        if (m_ActionMenu.isOpen()) m_ActionMenu.close(true);
     }
 }

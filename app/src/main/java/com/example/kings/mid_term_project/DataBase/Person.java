@@ -85,13 +85,6 @@ public class Person implements Parcelable {
         dest.writeString(category);
         dest.writeString(time);
         dest.writeString(description);
-
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-//        final byte[] bytes = baos.toByteArray();
-//        dest.writeInt(bytes.length);
-//        dest.writeByteArray(bytes);
-
     }
 
     public static final Parcelable.Creator<Person> CREATOR = new Creator<Person>() {
@@ -102,12 +95,6 @@ public class Person implements Parcelable {
             temp.category = source.readString();
             temp.time = source.readString();
             temp.description = source.readString();
-
-//            int length = source.readInt();
-//            byte [] bytes = new byte[length];
-//            source.readByteArray(bytes);
-//            temp.bitmap = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-
             return temp;
         }
         public Person[] newArray(int size) {
