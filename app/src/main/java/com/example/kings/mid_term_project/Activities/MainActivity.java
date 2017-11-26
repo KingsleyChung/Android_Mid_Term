@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView m_MenuBtn;
     private android.support.design.widget.FloatingActionButton m_DeleteButton;
     private SearchView m_SearchView;
+    private ListView m_ListView;
     private View m_Glass;
     private FloatingActionMenu m_ActionMenu;
     private MyRecyclerAdapter m_RecyclerAdapter;
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         m_SearchView = findViewById(R.id.search_view);
         m_Glass = findViewById(R.id.frosted_glass);
         m_DeleteButton = findViewById(R.id.delete_button);
+        m_ListView = findViewById(R.id.list_view);
 
         m_MenuBtn = new ImageView(this); // Create an icon
         m_MenuBtn.setImageResource(R.mipmap.ic_menu_white_48pt_2x);
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         m_MenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDelete == false && !m_ActionMenu.isOpen()) m_ActionMenu.open(true);
+                if (isDelete == false && isSearch == false && !m_ActionMenu.isOpen()) m_ActionMenu.open(true);
                 resetStatus();
             }
         });
@@ -242,45 +244,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchFunc() {
         m_ActionMenu.close(true);
-        isSearch = !isSearch;
-        if (isSearch) {
+        if (!isSearch) {
+            isSearch = !isSearch;
             m_SearchView.setVisibility(View.VISIBLE);
             m_Glass.setVisibility(View.VISIBLE);
+            m_ListView.setVisibility(View.VISIBLE);
             m_MenuBtn.setImageResource(R.mipmap.back);
+
+            m_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    System.out.println(newText);
+                    if (!newText.equals("")) {
+                        relativePerson = m_DataStorage.searchPerson(newText);
+                        listViewItemUpdate(m_ListView, relativePerson);
+                    }
+                    return false;
+                }
+            });
         }
         else {
             resetStatus();
         }
-        //listview
-        final ListView listView = (ListView)findViewById(R.id.list_view);
-
-        //SearchView and ListView visible
-        m_SearchView = (SearchView)findViewById(R.id.search_view);
-        isSearch = !isSearch;
-        if (isSearch) {
-            m_SearchView.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
-        }
-        else {
-            m_SearchView.setVisibility(View.INVISIBLE);
-            listView.setVisibility(View.INVISIBLE);
-        }
-        m_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                System.out.println(newText);
-                if (!newText.equals("")) {
-                    relativePerson = m_DataStorage.searchPerson(newText);
-                    listViewItemUpdate(listView, relativePerson);
-                }
-                return false;
-            }
-        });
     }
 
     private void listViewItemUpdate(ListView listView, final ArrayList<Person> relativePerson) {
@@ -306,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         m_DeleteButton.setVisibility(View.INVISIBLE);
         m_SearchView.setVisibility(View.INVISIBLE);
         m_Glass.setVisibility(View.INVISIBLE);
+        m_ListView.setVisibility(View.INVISIBLE);
         if (!isDelete) updateSelection();
         if (m_ActionMenu.isOpen()) m_ActionMenu.close(true);
     }
