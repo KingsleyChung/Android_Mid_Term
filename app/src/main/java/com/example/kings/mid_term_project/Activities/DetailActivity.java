@@ -206,6 +206,7 @@ public class DetailActivity extends Activity {
 
     private void setEditMode() {
         status = "edit";
+        bitmap = DataStorage.getBitmapFromName(m_Data.getName());
         m_Icon.setImageBitmap(bitmap);
         m_Name.setText(m_Data.getName());
         m_Gender.setText(m_Data.getSex());
